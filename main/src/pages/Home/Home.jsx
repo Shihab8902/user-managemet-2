@@ -1,10 +1,13 @@
+import { useContext } from "react";
 import Login from "../Login/Login";
 import Profile from "../User profile/Profile";
+import { AuthContext } from "../../context/AuthProvider";
 
 const Home = () => {
 
 
-    const user = false;
+    const { user } = useContext(AuthContext);
+    console.log(user);
 
 
 

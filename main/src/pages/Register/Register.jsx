@@ -1,10 +1,10 @@
 import { Form } from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthProvider";
-import { updateProfile } from "firebase/auth";
+import Swal from 'sweetalert2';
 
 
 
@@ -12,6 +12,8 @@ import { updateProfile } from "firebase/auth";
 const Register = () => {
 
     const { createUser } = useContext(AuthContext);
+    const navigate = useNavigate();
+
 
 
     //States
@@ -32,7 +34,20 @@ const Register = () => {
         const dateOfBirth = form.dateOfBirth.value;
         const password = form.password.value;
 
-        // const data = { name, email, phone, dateOfBirth, password, picture };
+
+        //Check for password length
+        if (password.length < 6) {
+            return Swal.fire({
+                title: "Password Error!",
+                icon: "error",
+                text: "Password must be at least 6 character!"
+            })
+        }
+
+
+
+
+
 
         //Host user image to imagebb
         axios.post(`https://api.imgbb.com/1/upload?key=${imageHostingAPIKey}`, { image: picture[0] }, {
@@ -48,15 +63,29 @@ const Register = () => {
                     createUser(email, password)
                         .then(res => {
                             if (res.user) {
-                                // Update user name and profile picture
-                                updateProfile(res.user, {
-                                    displayName: name,
-                                    photoURL: imageURL,
-                                }).then(() => {
 
-                                })
+                                const data = { name, email, phone, dateOfBirth, password, picture: imageURL };
+                                axios.post("http://localhost:9000/user", data)
+                                    .then(res => {
+                                        if (res.data) {
+                                            Swal.fire({
+                                                position: "center",
+                                                icon: "success",
+                                                text: "Account registered successfully!",
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                            });
+                                            navigate("/")
 
+                                        }
+                                    })
                             }
+                        }).catch(error => {
+                            Swal.fire({
+                                title: "Error!",
+                                icon: "error",
+                                text: error.message
+                            })
                         })
                 }
             })
@@ -107,7 +136,7 @@ const Register = () => {
             </Form.Group>
 
             <Form.Group className="mt-4" controlId="submit">
-                <Form.Control size="lg" className="bg-primary text-white" type="submit" />
+                <Form.Control size="lg" className="bg-primary text-white" type="submit" value="Register" />
             </Form.Group>
 
             <p className="text-center mt-3 ">Already have an account? <Link className="text-decoration-none hover-text-decoration-underline" to="/login">Login</Link></p>
