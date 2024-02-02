@@ -1,13 +1,24 @@
 import { Form } from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import axios from "axios";
+import { AuthContext } from "../../context/AuthProvider";
+import { updateProfile } from "firebase/auth";
+
+
 
 
 const Register = () => {
 
+    const { createUser } = useContext(AuthContext);
+
+
     //States
     const [picture, setPicture] = useState(null);
+
+    const imageHostingAPIKey = import.meta.env.VITE_IMAGE_HOSTING_API_KEY;
+
 
 
     // Handle form submit
@@ -21,8 +32,36 @@ const Register = () => {
         const dateOfBirth = form.dateOfBirth.value;
         const password = form.password.value;
 
-        const data = { name, email, phone, dateOfBirth, password, picture };
-        console.log(data);
+        // const data = { name, email, phone, dateOfBirth, password, picture };
+
+        //Host user image to imagebb
+        axios.post(`https://api.imgbb.com/1/upload?key=${imageHostingAPIKey}`, { image: picture[0] }, {
+            headers: {
+                "content-Type": "multipart/form-data"
+            }
+        })
+            .then(res => {
+                if (res.data?.success) {
+                    const imageURL = res.data?.data.display_url;
+
+                    // Create user
+                    createUser(email, password)
+                        .then(res => {
+                            if (res.user) {
+                                // Update user name and profile picture
+                                updateProfile(res.user, {
+                                    displayName: name,
+                                    photoURL: imageURL,
+                                }).then(() => {
+
+                                })
+
+                            }
+                        })
+                }
+            })
+
+
     }
 
 
