@@ -38,7 +38,7 @@ const DataModal = ({ isModalOpen, setIsModalOpen, data, refetch }) => {
 
     //Handle update information
     const handleUpdate = (data) => {
-        axios.put(`http://localhost:9000/user?id=${_id}`, data)
+        axios.put(`https://user-management-2.vercel.app/user?id=${_id}`, data)
             .then(res => {
                 if (res.data) {
                     Swal.fire({

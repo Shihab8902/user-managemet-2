@@ -67,7 +67,7 @@ const Register = () => {
                             if (res.user) {
 
                                 const data = { name, email, phone, dateOfBirth, password, picture: imageURL };
-                                axios.post("http://localhost:9000/user", data)
+                                axios.post("https://user-management-2.vercel.app/user", data)
                                     .then(res => {
                                         if (res.data) {
                                             Swal.fire({

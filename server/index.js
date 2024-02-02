@@ -17,6 +17,11 @@ app.use(userRoutes);
 
 
 
+//Initial route
+app.get("/", (req, res) => {
+    res.send({ message: "The server is up and running...." })
+})
+
 //Listen server and database connection
 const run = async () => {
     await connectDB();

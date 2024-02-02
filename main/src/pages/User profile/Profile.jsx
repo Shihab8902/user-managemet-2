@@ -19,7 +19,7 @@ const Profile = () => {
     const { isPending, refetch, data = {} } = useQuery({
         queryKey: ["user", user?.email],
         queryFn: async () => {
-            const response = await axios.get(`http://localhost:9000/user?email=${user?.email}`);
+            const response = await axios.get(`https://user-management-2.vercel.app/user?email=${user?.email}`);
             return response.data;
         }
     });
