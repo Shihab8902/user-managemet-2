@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { Form } from "react-bootstrap"
 import { Link, useNavigate } from "react-router-dom"
 import { AuthContext } from "../../context/AuthProvider"
@@ -9,12 +9,17 @@ const Login = () => {
     const { loginUser } = useContext(AuthContext);
     const navigate = useNavigate();
 
+    //States
+    const [isLogin, setIsLogin] = useState(false);
+
     //Handle form submit
     const handleSubmit = (e) => {
         e.preventDefault();
         const form = e.target;
         const email = form.email.value;
         const password = form.password.value;
+
+        setIsLogin(true);
 
         //Login user
         loginUser(email, password)
@@ -27,7 +32,8 @@ const Login = () => {
                         showConfirmButton: false,
                         timer: 1500
                     });
-                    navigate("/")
+                    navigate("/");
+                    setIsLogin(false);
                 }
             })
             .catch(error => {
@@ -36,6 +42,7 @@ const Login = () => {
                     icon: "error",
                     text: error.message
                 });
+                setIsLogin(false);
             });
     }
 
@@ -61,7 +68,7 @@ const Login = () => {
             </Form.Group>
 
             <Form.Group className="mt-4" controlId="submit">
-                <Form.Control size="lg" className="bg-primary text-white" type="submit" value="Login" />
+                <Form.Control disabled={isLogin} size="lg" className="bg-primary text-white" type="submit" value={isLogin ? "Logging...." : "Login"} />
             </Form.Group>
 
             <p className="text-center mt-3 ">Don't have an account? <Link className="text-decoration-none hover-text-decoration-underline" to="/register">Register</Link></p>

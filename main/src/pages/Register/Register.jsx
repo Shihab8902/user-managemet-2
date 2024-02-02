@@ -15,9 +15,9 @@ const Register = () => {
     const navigate = useNavigate();
 
 
-
     //States
     const [picture, setPicture] = useState(null);
+    const [isRegistering, setIsRegistering] = useState(false);
 
     const imageHostingAPIKey = import.meta.env.VITE_IMAGE_HOSTING_API_KEY;
 
@@ -33,6 +33,8 @@ const Register = () => {
         const phone = form.phone.value;
         const dateOfBirth = form.dateOfBirth.value;
         const password = form.password.value;
+
+        setIsRegistering(true);
 
 
         //Check for password length
@@ -76,6 +78,7 @@ const Register = () => {
                                                 timer: 1500
                                             });
                                             navigate("/")
+                                            setIsRegistering(false);
 
                                         }
                                     })
@@ -85,7 +88,8 @@ const Register = () => {
                                 title: "Error!",
                                 icon: "error",
                                 text: error.message
-                            })
+                            });
+                            setIsRegistering(false);
                         })
                 }
             })
@@ -136,7 +140,7 @@ const Register = () => {
             </Form.Group>
 
             <Form.Group className="mt-4" controlId="submit">
-                <Form.Control size="lg" className="bg-primary text-white" type="submit" value="Register" />
+                <Form.Control disabled={isRegistering} size="lg" className="bg-primary text-white" type="submit" value={isRegistering ? "Registering..." : "Register"} />
             </Form.Group>
 
             <p className="text-center mt-3 ">Already have an account? <Link className="text-decoration-none hover-text-decoration-underline" to="/login">Login</Link></p>

@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const { userCollection } = require("../db/database");
 
 const router = require("express").Router();
@@ -37,6 +38,20 @@ router.post("/user", async (req, res) => {
     }
 });
 
+
+//Update user
+router.put("/user", async (req, res) => {
+    try {
+        const id = req.query.id;
+        const data = req.body;
+        const result = await userCollection.findByIdAndUpdate(new mongoose.Types.ObjectId(id), data);
+        res.send(result);
+
+    }
+    catch (error) {
+        console.log(error);
+    }
+})
 
 
 

@@ -1,13 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../../context/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import DataModal from '../../components/Modal/Modal';
 
 const Profile = () => {
 
     const { user, logOutUser } = useContext(AuthContext);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const navigate = useNavigate();
+
 
     //Fetch user data
     const { isPending, refetch, data = {} } = useQuery({
@@ -42,6 +48,7 @@ const Profile = () => {
                             showConfirmButton: false,
                             timer: 1500
                         });
+                        navigate("/")
                     })
             }
         });
@@ -69,7 +76,7 @@ const Profile = () => {
                             {/* Action button */}
                             <div className=' d-flex gap-4 justify-content-center mt-4'>
                                 <button onClick={handleLogout} className=' btn btn-danger '>Logout</button>
-                                <button className='btn btn-primary '>Edit profile</button>
+                                <button onClick={() => setIsModalOpen(!isModalOpen)} className='btn btn-primary '>Edit profile</button>
                             </div>
 
                             {/* Additional Information */}
@@ -80,8 +87,12 @@ const Profile = () => {
                             </ul>
 
 
+
                         </div>
                 }
+
+                {/* Profile edit Modal */}
+                <DataModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} data={data} refetch={refetch} />
 
             </>
                 : "forbidden"
